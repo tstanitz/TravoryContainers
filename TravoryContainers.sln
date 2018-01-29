@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2010
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B22A4BA9-B9C7-4E4D-99C2-3609AEC684EF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{44A03390-96D5-4B40-B037-FA44A87D368E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Flickr", "Flickr", "{ACE8C1B7-F60A-4575-A990-B453C883C5BA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Flickr.API", "src\Services\Flickr\Flickr.API\Flickr.API.csproj", "{7CD23C23-DF82-46EF-9553-B23CEF9835CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7CD23C23-DF82-46EF-9553-B23CEF9835CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7CD23C23-DF82-46EF-9553-B23CEF9835CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7CD23C23-DF82-46EF-9553-B23CEF9835CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7CD23C23-DF82-46EF-9553-B23CEF9835CC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{44A03390-96D5-4B40-B037-FA44A87D368E} = {B22A4BA9-B9C7-4E4D-99C2-3609AEC684EF}
+		{ACE8C1B7-F60A-4575-A990-B453C883C5BA} = {44A03390-96D5-4B40-B037-FA44A87D368E}
+		{7CD23C23-DF82-46EF-9553-B23CEF9835CC} = {ACE8C1B7-F60A-4575-A990-B453C883C5BA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F7AB3425-BB46-493A-B55A-053FA525441E}
+	EndGlobalSection
+EndGlobal
