@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.Hosting.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
+using TravoryContainers.Services.Flickr.API.Connector;
+using TravoryContainers.Services.Flickr.API.Connector.OAuthParameterHandling;
+using TravoryContainers.Services.Flickr.API.Helpers;
 
 namespace TravoryContainers.Services.Flickr.API
 {
@@ -17,7 +20,12 @@ namespace TravoryContainers.Services.Flickr.API
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
-        {            
+        {
+            services.AddSingleton<IHttpClientFactory, HttpClientFactory>();
+            services.AddScoped<IOAuthParameterHandlerFactory, OAuthParameterHandlerFactory>();
+            services.AddScoped<IFlickrConnector, FlickrConnector>();
+
+
             services.AddMvc();
 
             services.AddSwaggerGen(c =>
