@@ -20,8 +20,10 @@ namespace TravoryContainers.Services.Flickr.API
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IHttpClientFactory, HttpClientFactory>();
-            services.AddScoped<IOAuthParameterHandlerFactory, OAuthParameterHandlerFactory>();
+            services.AddTransient<IHttpClientFactory, HttpClientFactory>();
+            services.AddTransient<IOAuthDataProvider, OAuthDataProvider>();
+            services.AddTransient<IFlickrSignatureCalculator, FlickrSignatureCalculator>();
+            services.AddScoped<IOAuthParameterHandler, OAuthParameterHandler>();
             services.AddScoped<IFlickrConnector, FlickrConnector>();
 
 

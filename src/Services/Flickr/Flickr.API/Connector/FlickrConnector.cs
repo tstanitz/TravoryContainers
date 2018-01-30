@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TravoryContainers.Services.Flickr.API.Connector.EndPoints;
 using TravoryContainers.Services.Flickr.API.Connector.Exceptions;
@@ -13,31 +14,32 @@ namespace TravoryContainers.Services.Flickr.API.Connector
 {
     public class FlickrConnector : IFlickrConnector
     {
-        private readonly IOAuthParameterHandlerFactory _oAuthParameterHandlerFactory;
+        private readonly IOAuthParameterHandler _oAuthParameterHandler;
         private readonly HttpClient _httpClient;
 
-        public FlickrConnector(IOAuthParameterHandlerFactory oAuthParameterHandlerFactory, IHttpClientFactory httpClientFactory)
+        public FlickrConnector(IOAuthParameterHandler oAuthParameterHandler, IHttpClientFactory httpClientFactory)
         {
-            _oAuthParameterHandlerFactory = oAuthParameterHandlerFactory;
+            _oAuthParameterHandler = oAuthParameterHandler;
             _httpClient = httpClientFactory.Client;
         }
 
-        public async Task<FlickrPhotoSetsResult> GetPhotoSets(UserData userData)
+        public async Task<FlickrPhotoSetsResult> GetPhotoSets([FromBody]UserData userData)
         {
-            var oAuthParameterHandler = _oAuthParameterHandlerFactory.CreateHandler(userData);
+            _oAuthParameterHandler.Initialize(userData);
 
-            oAuthParameterHandler.AddAdditionalParameter("method", FlickrMethod.GetPhotoSets);
-            oAuthParameterHandler.AddAdditionalParameter("format", "json");
+            _oAuthParameterHandler.AddAdditionalParameter("method", FlickrMethod.GetPhotoSets);
+            _oAuthParameterHandler.AddAdditionalParameter("format", "json");
 
             var endPoint = new FlickrRestEndPoint();
-            oAuthParameterHandler.AddSignature(endPoint);
+            _oAuthParameterHandler.AddSignature(endPoint);
 
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("OAuth", oAuthParameterHandler.GetAuthenticationHeader());
-            var response = await _httpClient.GetAsync($"{endPoint.Url}?{oAuthParameterHandler.GetQueryString()}");
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("OAuth", _oAuthParameterHandler.GetAuthenticationHeader());
+            var response = await _httpClient.GetAsync($"{endPoint.Url}?{_oAuthParameterHandler.GetQueryString()}");
             response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             return ParseAndCheckResult<FlickrPhotoSetsResult>(responseString);
         }
+
         private T ParseAndCheckResult<T>(string jsonResult) where T : FlickrResult
         {
             var result = jsonResult.Substring(14, jsonResult.Length - 15);
