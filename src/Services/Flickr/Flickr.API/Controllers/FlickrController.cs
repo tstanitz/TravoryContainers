@@ -6,7 +6,7 @@ using TravoryContainers.Services.Flickr.API.Model;
 
 namespace TravoryContainers.Services.Flickr.API.Controllers
 {
-    [Route("flickr")]
+    [Route("api/v1/flickr")]
     public class FlickrController : Controller
     {
         private readonly IFlickrConnector _flickrConnector;
