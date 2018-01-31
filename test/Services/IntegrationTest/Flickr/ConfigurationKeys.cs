@@ -2,9 +2,9 @@
 {
     public class ConfigurationKeys
     {
-        public const string ConsumerKey = "TestTravoryConsumerKey";
-        public const string ConsumerSecret = "TestTravoryConsumerSecret";
-        public const string Token = "TestTravoryToken";
-        public const string TokenSecret = "TestTravoryTokenSecret";
+        public const string ConsumerKey = "Test_Travory_ConsumerKey";
+        public const string ConsumerSecret = "Test_Travory_ConsumerSecret";
+        public const string Token = "Test_Travory_Token";
+        public const string TokenSecret = "Test_Travory_TokenSecret";
     }
 }
