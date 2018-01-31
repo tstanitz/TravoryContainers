@@ -15,7 +15,7 @@ namespace UnitTest.Flickr
         private readonly UserData _userData;
         private readonly string timestamp = "1487531026";
         private readonly string nonce = "d853dfc999a94ca6b91625222b13165b";
-        private Mock<IOAuthDataProvider> _oAuthDataProviderMock;
+        private readonly Mock<IOAuthDataProvider> _oAuthDataProviderMock;
 
         public OAuthParameterHandlerTest()
         {
