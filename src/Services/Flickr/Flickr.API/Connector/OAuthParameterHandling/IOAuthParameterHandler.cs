@@ -8,7 +8,7 @@ namespace TravoryContainers.Services.Flickr.API.Connector.OAuthParameterHandling
     public interface IOAuthParameterHandler
     {
         IList<RequestParameter> OAuthParameters { get; }
-        void Initialize(UserData userData);
+        void AddUserParameters(UserData userData);
         void AddAdditionalParameter(string key, string value);
         void AddSignature(FlickrEndPointBase endpoint);
         string GetAuthenticationHeader();

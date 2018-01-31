@@ -19,23 +19,28 @@ namespace TravoryContainers.Services.Flickr.API.Connector.OAuthParameterHandling
         {
             _oAuthDataProvider = oAuthDataProvider;
             _signatureCalculator = signatureCalculator;
+            InitializeParams();
+        }
+
+        private void InitializeParams()
+        {
+            OAuthParameters = new List<RequestParameter>
+            {
+                new SignatureMethodRequestParameter(),
+                new VersionRequestParameter(),
+                new TimestampRequestParameter(_oAuthDataProvider.GetTimestamp()),
+                new NonceRequestParameter(_oAuthDataProvider.GetNonce())
+            };
         }
 
         public IList<RequestParameter> OAuthParameters { get; private set; }
 
-        public void Initialize(UserData userData)
+        public void AddUserParameters(UserData userData)
         {
             _consumerSecret = userData.ConsumerSecret;
             _tokenSecret = userData.TokenSecret;
-            OAuthParameters = new List<RequestParameter>
-            {
-                new ConsumerKeyRequestParameter(userData.ConsumerKey),
-                new SignatureMethodRequestParameter(),
-                new VersionRequestParameter(),
-                new TokenRequestParameter(userData.Token),
-                new TimestampRequestParameter(_oAuthDataProvider.GetTimestamp()),
-                new NonceRequestParameter(_oAuthDataProvider.GetNonce())
-            };
+            OAuthParameters.Add(new ConsumerKeyRequestParameter(userData.ConsumerKey));
+            OAuthParameters.Add(new TokenRequestParameter(userData.Token));
         }
 
         public void AddAdditionalParameter(string key, string value)

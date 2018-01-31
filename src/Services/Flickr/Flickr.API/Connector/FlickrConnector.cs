@@ -25,7 +25,7 @@ namespace TravoryContainers.Services.Flickr.API.Connector
 
         public async Task<FlickrPhotoSetsResult> GetPhotoSets([FromBody]UserData userData)
         {
-            _oAuthParameterHandler.Initialize(userData);
+            _oAuthParameterHandler.AddUserParameters(userData);
 
             _oAuthParameterHandler.AddAdditionalParameter("method", FlickrMethod.GetPhotoSets);
             _oAuthParameterHandler.AddAdditionalParameter("format", "json");
