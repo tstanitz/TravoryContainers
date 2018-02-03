@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Swashbuckle.AspNetCore.Swagger;
 using TravoryContainers.Services.Flickr.API.Connector;
 using TravoryContainers.Services.Flickr.API.Connector.OAuthParameterHandling;
+using TravoryContainers.Services.Flickr.API.Controllers;
 using TravoryContainers.Services.Flickr.API.Helpers;
 
 namespace TravoryContainers.Services.Flickr.API
@@ -21,6 +22,7 @@ namespace TravoryContainers.Services.Flickr.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IHttpClientFactory, HttpClientFactory>();
+            services.AddScoped<IDateCalculator, DateCalculator>();
             services.AddScoped<IOAuthDataProvider, OAuthDataProvider>();
             services.AddScoped<IFlickrSignatureCalculator, FlickrSignatureCalculator>();
             services.AddScoped<IOAuthParameterHandler, OAuthParameterHandler>();
