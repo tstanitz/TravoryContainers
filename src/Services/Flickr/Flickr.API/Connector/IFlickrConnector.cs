@@ -7,5 +7,6 @@ namespace TravoryContainers.Services.Flickr.API.Connector
     public interface IFlickrConnector
     {
         Task<FlickrPhotoSetsResult> GetPhotoSets(UserData userData);
+        Task<FlickrPhotoSizesResult> GetPhotoSizes(UserData userData, long photoId);
     }
 }

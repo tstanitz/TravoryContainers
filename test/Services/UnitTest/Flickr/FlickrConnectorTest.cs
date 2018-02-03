@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Moq;
 using TravoryContainers.Services.Flickr.API.Connector;
@@ -43,6 +44,32 @@ namespace UnitTest.Flickr
             Assert.Equal("Test photoset 2", photoSetsResult.PhotoSets.PhotoSet[1].Title._Content);
             Assert.Equal("2017. 05. 30.", photoSetsResult.PhotoSets.PhotoSet[1].Description._Content);
             Assert.Equal("32182272604", photoSetsResult.PhotoSets.PhotoSet[1].Primary);
+        }
+
+        [Fact]
+        public async Task GetPhotoSizes_SuccessfullResponse()
+        {
+            _httpMessageHandlerStub.Content = "jsonFlickrApi({\"sizes\":{\"canblog\":1,\"canprint\":1,\"candownload\":1,\"size\":" +
+                "[" +
+                    "{\"label\":\"Square\",\"width\":75,\"height\":75,\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_square.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/sq\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Large Square\",\"width\":150,\"height\":150,\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_large_square_s.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/q\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Thumbnail\",\"width\":100,\"height\":67,\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_thumb_s.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/t\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Small\",\"width\":\"240\",\"height\":\"160\",\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_small.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/s\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Small 320\",\"width\":\"320\",\"height\":\"213\",\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_small320.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/s3\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Medium\",\"width\":\"500\",\"height\":\"333\",\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_medium.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/m\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Medium 640\",\"width\":\"640\",\"height\":\"427\",\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_medium640.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/m6\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Medium 800\",\"width\":\"800\",\"height\":\"534\",\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_medium800.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/m8\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Large\",\"width\":\"1024\",\"height\":\"768\",\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_large.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/l\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Large 1600\",\"width\":\"1600\",\"height\":1200,\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_large1600.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/h\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Large 2048\",\"width\":\"2048\",\"height\":1536,\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_latge2800.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/k\\/\",\"media\":\"photo\"}," +
+                    "{\"label\":\"Original\",\"width\":\"3264\",\"height\":\"2448\",\"source\":\"https:\\/\\/farm5.staticflickr.com\\/7654\\/5435435463_original.jpg\",\"url\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/435436346\\/sizes\\/o\\/\",\"media\":\"photo\"}" +
+                "]},\"stat\":\"ok\"})";
+
+            var flickrPhotoSizesResult = await _connector.GetPhotoSizes(_userData, 32182272603);
+
+            Assert.Equal("https://farm5.staticflickr.com/7654/5435435463_square.jpg", flickrPhotoSizesResult.Sizes.Size.FirstOrDefault(s => s.Label == "Square")?.Source);
+            Assert.Equal("https://farm5.staticflickr.com/7654/5435435463_large.jpg", flickrPhotoSizesResult.Sizes.Size.FirstOrDefault(s => s.Label == "Large")?.Source);
+            Assert.Equal("https://farm5.staticflickr.com/7654/5435435463_original.jpg", flickrPhotoSizesResult.Sizes.Size.FirstOrDefault(s => s.Label == "Original")?.Source);
         }
     }
 }
