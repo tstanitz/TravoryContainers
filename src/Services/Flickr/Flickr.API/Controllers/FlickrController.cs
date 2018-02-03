@@ -47,6 +47,21 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
             return Ok(albums);
         }
 
+        [HttpPost]
+        [Route("photo/{id}")]
+        public async Task<IActionResult> GetPhoto([FromBody]UserData userData, long id)
+        {
+            var flickrResult = await _flickrConnector.GetPhotoSizes(userData, id);
+            var flickrPhotoSizeDataList = flickrResult?.Sizes?.Size;
+            return Ok(new Photo
+            {
+                Id = id,
+                Square = flickrPhotoSizeDataList?.FirstOrDefault(s => s.Label == "Square")?.Source,
+                Large = flickrPhotoSizeDataList?.FirstOrDefault(s => s.Label == "Large")?.Source,
+                Original = flickrPhotoSizeDataList?.FirstOrDefault(s => s.Label == "Original")?.Source
+            });
+        }
+
         private (DateTime? from, DateTime? to) GetFromAndToDates(FlickrPhotoSetData photoSet)
         {
             var intervalComment = photoSet?.Description?._Content;

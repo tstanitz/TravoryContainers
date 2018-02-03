@@ -32,7 +32,7 @@ namespace UnitTest.Flickr
         [Fact]
         public async Task GetAlbums_ReturnsListOfAlbums()
         {
-            _flickrConnectorMock.Setup(f => f.GetPhotoSets(It.Is<UserData>(u => u == _userData))).ReturnsAsync(GetFlickrPhotoSetsResult(_photoSetDataValue)).Verifiable();
+            _flickrConnectorMock.Setup(f => f.GetPhotoSets(It.Is<UserData>(u => u == _userData))).ReturnsAsync(GetPhotoSetsResult(_photoSetDataValue)).Verifiable();
 
             var actionResult = await _flickrController.GetAlbums(_userData) as OkObjectResult;
 
@@ -49,7 +49,7 @@ namespace UnitTest.Flickr
         public async Task GetAlbums_CalculatedFromAndToDates()
         {
             _photoSetDataValue.description = "2017. 05. 30. - 2017. 05. 31.";
-            _flickrConnectorMock.Setup(f => f.GetPhotoSets(It.Is<UserData>(u => u == _userData))).ReturnsAsync(GetFlickrPhotoSetsResult(_photoSetDataValue)).Verifiable();
+            _flickrConnectorMock.Setup(f => f.GetPhotoSets(It.Is<UserData>(u => u == _userData))).ReturnsAsync(GetPhotoSetsResult(_photoSetDataValue)).Verifiable();
             _dateCalculatorMock
                 .Setup(d => d.GetDate(It.Is<string>(s => s == "2017. 05. 30."))).Returns(new DateTime(2017, 5, 30)).Verifiable();
             _dateCalculatorMock
@@ -64,9 +64,28 @@ namespace UnitTest.Flickr
             Assert.Equal(new DateTime(2017, 5, 31), ((List<Album>)actionResult.Value)[0].ToDate);
         }
 
+        [Fact]
+        public async Task GetPhoto_ReturnsPhotoSources()
+        {
+            var square = "https://farm5.staticflickr.com/7654/5435435463_square.jpg";
+            var large = "https://farm5.staticflickr.com/7654/5435435463_large.jpg";
+            var original = "https://farm5.staticflickr.com/7654/5435435463_orig.jpg";
+            long photoId = 32182272603;
+            _flickrConnectorMock
+                .Setup(f => f.GetPhotoSizes(It.Is<UserData>(u => u == _userData), It.Is<long>(l => l == photoId)))
+                .ReturnsAsync(GetPhotoSizesResult((label: "Square", square),("Large", large), ("Original", original)));
+            var actionResult = await _flickrController.GetPhoto(_userData, photoId) as OkObjectResult;
 
+            _dateCalculatorMock.Verify();
+            Assert.NotNull(actionResult);
+            Assert.Equal((int)System.Net.HttpStatusCode.OK, actionResult.StatusCode);
+            Assert.Equal(photoId, ((Photo)actionResult.Value).Id);
+            Assert.Equal(square, ((Photo)actionResult.Value).Square);
+            Assert.Equal(large, ((Photo)actionResult.Value).Large);
+            Assert.Equal(original, ((Photo)actionResult.Value).Original);
+        }
 
-        private static FlickrPhotoSetsResult GetFlickrPhotoSetsResult(params (long id, long primary, string title, string description)[] photoSetDataValues)
+        private FlickrPhotoSetsResult GetPhotoSetsResult(params (long id, long primary, string title, string description)[] photoSetDataValues)
         {
             return new FlickrPhotoSetsResult()
             {
@@ -84,6 +103,21 @@ namespace UnitTest.Flickr
                         {
                             _Content = p.description
                         }
+                    }).ToList()
+                }
+            };
+        }
+
+        private FlickrPhotoSizesResult GetPhotoSizesResult(params(string label, string source)[] sizes)
+        {
+            return new FlickrPhotoSizesResult
+            {
+                Sizes = new FlickrPhotoSizesData
+                {
+                    Size = sizes.Select(s => new FlickrPhotoSizeData
+                    {
+                        Label = s.label,
+                        Source = s.source
                     }).ToList()
                 }
             };
