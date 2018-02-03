@@ -20,6 +20,7 @@ namespace UnitTest.Flickr
             var userData = new UserData();
             string id = "27157680817475516";
             string title = "Title";
+            string primary = "32182272603";
             flickrConnectorMock.Setup(f => f.GetPhotoSets(It.Is<UserData>(u => u == userData))).ReturnsAsync(new FlickrPhotoSetsResult()
             {
                 PhotoSets = new FlickrPhotoSetsData()
@@ -29,6 +30,7 @@ namespace UnitTest.Flickr
                         new FlickrPhotoSetData()
                         {
                             Id = id,
+                            Primary = primary,
                             Title = new FlickrContentData()
                             {
                                 _Content = title
@@ -45,6 +47,7 @@ namespace UnitTest.Flickr
             Assert.Equal((int)System.Net.HttpStatusCode.OK, actionResult.StatusCode);
             Assert.Single((List<Album>)actionResult.Value);
             Assert.Equal(long.Parse(id), ((List<Album>)actionResult.Value)[0].Id);
+            Assert.Equal(long.Parse(primary), ((List<Album>)actionResult.Value)[0].Primary);
             Assert.Equal(title, ((List<Album>)actionResult.Value)[0].Title);
         }
     }

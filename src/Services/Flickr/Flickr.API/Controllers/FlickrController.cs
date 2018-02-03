@@ -29,7 +29,8 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
                     albums.Add(new Album
                     {
                         Id = long.Parse(photoSet.Id),
-                        Title = photoSet.Title._Content
+                        Primary = long.Parse(photoSet.Primary),
+                        Title = photoSet.Title._Content,                        
                     });
                 }
             }
