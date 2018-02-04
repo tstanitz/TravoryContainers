@@ -50,5 +50,17 @@ namespace IntegrationTest.Flickr
                 response.EnsureSuccessStatusCode();
             }
         }
+
+        [Fact]
+        public async Task Post_photoinfo_and_response_ok_status_code()
+        {
+            using (var server = CreateServer())
+            {
+                var content = new StringContent(_userDataProvider.BuildUserData(), Encoding.UTF8, "application/json");
+                var response = await server.CreateClient().PostAsync(Post.PhotoInfo(_idProvider.GetPhotoId), content);
+
+                response.EnsureSuccessStatusCode();
+            }
+        }
     }
 }
