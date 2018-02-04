@@ -88,6 +88,22 @@ namespace UnitTest.Flickr
             Assert.Equal(original, ((Photo)actionResult.Value).Original);
         }
 
+        [Fact]
+        public async Task GetPhotoSetPhotos_ReturnsPhotoIds()
+        {
+            long photoSetId = 27157680817475516;
+            long photoId = 32182272603;
+            _flickrConnectorMock.Setup(f => f.GetPhotosSetPhotos(It.Is<UserData>(u => u == _userData), It.Is<long>(i => i == photoSetId))).ReturnsAsync(GetPhotosResult(photoId)).Verifiable();
+
+            var actionResult = await _flickrController.GetPhotoSetPhotos(_userData, photoSetId) as OkObjectResult;
+
+            _flickrConnectorMock.Verify();
+            Assert.NotNull(actionResult);
+            Assert.Equal((int)System.Net.HttpStatusCode.OK, actionResult.StatusCode);
+            Assert.Single((List<PhotoReference>)actionResult.Value);
+            Assert.Equal(photoId, ((List<PhotoReference>)actionResult.Value)[0].Id);
+        }
+
         private FlickrPhotoSetsResult GetPhotoSetsResult(params (long id, long primary, string title, string description)[] photoSetDataValues)
         {
             return new FlickrPhotoSetsResult()
@@ -121,6 +137,20 @@ namespace UnitTest.Flickr
                     {
                         Label = s.label,
                         Source = s.source
+                    }).ToList()
+                }
+            };
+        }
+
+        private static FlickrPhotosResult GetPhotosResult(params long[] photoIds)
+        {
+            return new FlickrPhotosResult()
+            {
+                PhotoSet = new FlickrPhotoSetPhotosData
+                {
+                    Photo = photoIds.Select(p => new FlickrPhotoInfoData
+                    {
+                        Id = p.ToString()
                     }).ToList()
                 }
             };

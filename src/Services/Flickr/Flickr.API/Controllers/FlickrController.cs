@@ -62,6 +62,24 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("photoset/{id}/photos")]
+        public async Task<IActionResult> GetPhotoSetPhotos([FromBody]UserData userData, long id)
+        {
+            var flickrResult = await _flickrConnector.GetPhotosSetPhotos(userData, id);
+            var photoIds = new List<PhotoReference>();
+
+            foreach (var photoReference in flickrResult.PhotoSet.Photo)
+            {
+                photoIds.Add(new PhotoReference
+                {
+                    Id = long.Parse(photoReference.Id)
+                });
+            }
+
+            return Ok(photoIds);
+        }
+
         private (DateTime? from, DateTime? to) GetFromAndToDates(FlickrPhotoSetData photoSet)
         {
             var intervalComment = photoSet?.Description?._Content;
@@ -76,7 +94,5 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
             }
             return (from: null, to: null);
         }
-
-
     }
 }
