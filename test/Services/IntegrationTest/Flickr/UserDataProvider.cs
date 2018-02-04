@@ -1,12 +1,11 @@
-﻿using System;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using TravoryContainers.Services.Flickr.API.Model;
 
 namespace IntegrationTest.Flickr
 {
-    public static class UserDataProvider
+    public class UserDataProvider : EnvironmentVariableHandlerBase
     {
-        public static string BuildUserData()
+        public string BuildUserData()
         {
             return JsonConvert.SerializeObject(new UserData
             {
@@ -15,10 +14,6 @@ namespace IntegrationTest.Flickr
                 Token = GetEnvironmentVariable(ConfigurationKeys.Token),
                 TokenSecret = GetEnvironmentVariable(ConfigurationKeys.TokenSecret)
             });
-        }
-        private static string GetEnvironmentVariable(string variableName)
-        {
-            return Environment.GetEnvironmentVariable(variableName) ?? throw new ArgumentException($"Missing environment variable: {variableName}");
-        }
+        }        
     }
 }

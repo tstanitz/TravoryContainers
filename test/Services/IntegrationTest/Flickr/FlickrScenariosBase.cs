@@ -19,6 +19,7 @@ namespace IntegrationTest.Flickr
         public static class Post
         {
             public static string Albums = $"{ApiUrlBase}/albums";
+            public static string PhotoSources(long id) => $"{ApiUrlBase}/photosources/{id}";
         }
     }
 }
