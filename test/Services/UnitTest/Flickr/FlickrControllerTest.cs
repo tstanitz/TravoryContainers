@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -104,6 +105,26 @@ namespace UnitTest.Flickr
             Assert.Equal(photoId, ((List<PhotoReference>)actionResult.Value)[0].Id);
         }
 
+        [Fact]
+        public async Task GetPhotoInfo_ReturnsPhotoDateTaken()
+        {
+            long photoId = 32182272603;
+            string dateTaken = "2017-07-16 08:11:15";
+            var date = DateTime.Parse("2017-07-16 08:11:15");
+            _flickrConnectorMock.Setup(f => f.GetPhotoInfo(It.Is<UserData>(u => u == _userData), It.Is<long>(i => i == photoId))).ReturnsAsync(GetPhotoInfoResult(photoId, dateTaken)).Verifiable();
+            _dateCalculatorMock
+                .Setup(d => d.GetDate(It.Is<string>(s => s == dateTaken))).Returns(date).Verifiable();
+
+            var actionResult = await _flickrController.GetPhotoInfo(_userData, photoId) as OkObjectResult;
+
+            _flickrConnectorMock.Verify();
+            _dateCalculatorMock.Verify();
+            Assert.NotNull(actionResult);
+            Assert.Equal((int)System.Net.HttpStatusCode.OK, actionResult.StatusCode);
+            Assert.Equal(photoId, ((PhotoInfo)actionResult.Value).Id);
+            Assert.Equal(date, ((PhotoInfo)actionResult.Value).Taken);
+        }        
+
         private FlickrPhotoSetsResult GetPhotoSetsResult(params (long id, long primary, string title, string description)[] photoSetDataValues)
         {
             return new FlickrPhotoSetsResult()
@@ -152,6 +173,20 @@ namespace UnitTest.Flickr
                     {
                         Id = p.ToString()
                     }).ToList()
+                }
+            };
+        }
+        private static FlickrPhotoInfoResult GetPhotoInfoResult(long photoId, string taken)
+        {
+            return new FlickrPhotoInfoResult
+            {
+                Photo = new FlickrPhotoData
+                {
+                    Id = photoId.ToString(),
+                    Dates = new FlickrDates()
+                    {
+                        Taken = taken
+                    }
                 }
             };
         }
