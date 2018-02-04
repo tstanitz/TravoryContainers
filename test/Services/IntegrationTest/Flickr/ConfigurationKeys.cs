@@ -7,5 +7,6 @@
         public const string Token = "Test_Travory_Token";
         public const string TokenSecret = "Test_Travory_TokenSecret";
         public const string PhotoId = "Test_Travory_PhotoId";
+        public const string PhotoSetId = "Test_Travory_PhotoSetId";
     }
 }
