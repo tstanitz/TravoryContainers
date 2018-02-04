@@ -71,5 +71,21 @@ namespace UnitTest.Flickr
             Assert.Equal("https://farm5.staticflickr.com/7654/5435435463_large.jpg", flickrPhotoSizesResult.Sizes.Size.FirstOrDefault(s => s.Label == "Large")?.Source);
             Assert.Equal("https://farm5.staticflickr.com/7654/5435435463_original.jpg", flickrPhotoSizesResult.Sizes.Size.FirstOrDefault(s => s.Label == "Original")?.Source);
         }
+
+        [Fact]
+        public async Task GetPhotoSetPhotos_SuccessfullResponse()
+        {
+            _httpMessageHandlerStub.Content = "jsonFlickrApi({\"photoset\":{\"id\":\"72157680817475516\",\"primary\":\"34546724775\",\"owner\":\"148184080@N02\",\"ownername\":\"tstanitz\",\"photo\":[" +
+                                             "{\"id\":\"34546724775\",\"secret\":\"e0a5a8e527\",\"server\":\"4173\",\"farm\":5,\"title\":\"Test Title\",\"isprimary\":\"1\",\"ispublic\":0,\"isfriend\":0,\"isfamily\":0}," +
+                                             "{\"id\":\"34171365780\",\"secret\":\"37d23dd9c3\",\"server\":\"4184\",\"farm\":5,\"title\":\"Test Title\",\"isprimary\":\"0\",\"ispublic\":0,\"isfriend\":0,\"isfamily\":0}],\"page\":1,\"per_page\":500,\"perpage\":500,\"pages\":1,\"total\":\"5\",\"title\":\"Test photoset\"},\"stat\":\"ok\"})";
+
+            var flickrPhotosResult = await _connector.GetPhotosSetPhotos(_userData, 27157680817475516);
+
+            Assert.Equal(2, flickrPhotosResult.PhotoSet.Photo.Count);
+            Assert.Equal("34546724775", flickrPhotosResult.PhotoSet.Photo[0].Id);
+            Assert.Equal("1", flickrPhotosResult.PhotoSet.Photo[0].IsPrimary);
+            Assert.Equal("34171365780", flickrPhotosResult.PhotoSet.Photo[1].Id);
+            Assert.Equal("0", flickrPhotosResult.PhotoSet.Photo[1].IsPrimary);
+        }
     }
 }

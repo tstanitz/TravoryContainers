@@ -26,7 +26,6 @@ namespace TravoryContainers.Services.Flickr.API.Connector
         public async Task<FlickrPhotoSetsResult> GetPhotoSets([FromBody]UserData userData)
         {
             _oAuthParameterHandler.AddUserParameters(userData);
-
             _oAuthParameterHandler.AddAdditionalParameter("method", FlickrMethod.GetPhotoSets);
             _oAuthParameterHandler.AddAdditionalParameter("format", "json");
 
@@ -43,7 +42,6 @@ namespace TravoryContainers.Services.Flickr.API.Connector
         public async Task<FlickrPhotoSizesResult> GetPhotoSizes(UserData userData, long photoId)
         {
             _oAuthParameterHandler.AddUserParameters(userData);
-
             _oAuthParameterHandler.AddAdditionalParameter("photo_id", $"{photoId}");
             _oAuthParameterHandler.AddAdditionalParameter("method", FlickrMethod.GetPhotoSizes);
             _oAuthParameterHandler.AddAdditionalParameter("format", "json");
@@ -56,6 +54,23 @@ namespace TravoryContainers.Services.Flickr.API.Connector
             response.EnsureSuccessStatusCode();
             var responseString = await response.Content.ReadAsStringAsync();
             return ParseAndCheckResult<FlickrPhotoSizesResult>(responseString);
+        }
+
+        public async Task<FlickrPhotosResult> GetPhotosSetPhotos(UserData userData, long photoSetId)
+        {
+            _oAuthParameterHandler.AddUserParameters(userData);
+            _oAuthParameterHandler.AddAdditionalParameter("photoset_id", $"{photoSetId}");
+            _oAuthParameterHandler.AddAdditionalParameter("method", FlickrMethod.GetPhotoSetPhotos);
+            _oAuthParameterHandler.AddAdditionalParameter("format", "json");
+
+            var endPoint = new FlickrRestEndPoint();
+            _oAuthParameterHandler.AddSignature(endPoint);
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("OAuth", _oAuthParameterHandler.GetAuthenticationHeader());
+            var response = await _httpClient.GetAsync($"{endPoint.Url}?{_oAuthParameterHandler.GetQueryString()}");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            return ParseAndCheckResult<FlickrPhotosResult>(responseString);
         }
 
         private T ParseAndCheckResult<T>(string jsonResult) where T : FlickrResult

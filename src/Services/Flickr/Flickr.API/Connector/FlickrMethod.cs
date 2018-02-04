@@ -4,5 +4,6 @@
     {
         public const string GetPhotoSets = "flickr.photosets.getList";
         public const string GetPhotoSizes = "flickr.photos.getSizes";
+        public const string GetPhotoSetPhotos = "flickr.photosets.getPhotos";
     }
 }
