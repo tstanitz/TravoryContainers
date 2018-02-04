@@ -8,7 +8,7 @@ namespace IntegrationTest.Flickr
     public class FlickrScenarios : FlickrScenariosBase
     {        
         [Fact]
-        public async Task Post_basket_and_response_ok_status_code()
+        public async Task Post_albums_and_response_ok_status_code()
         {
             using (var server = CreateServer())
             {
