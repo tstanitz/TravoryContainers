@@ -73,6 +73,23 @@ namespace TravoryContainers.Services.Flickr.API.Connector
             return ParseAndCheckResult<FlickrPhotosResult>(responseString);
         }
 
+        public async Task<FlickrPhotoInfoResult> GetPhotoInfo(UserData userData, long photoId)
+        {
+            _oAuthParameterHandler.AddUserParameters(userData);
+            _oAuthParameterHandler.AddAdditionalParameter("photo_id", $"{photoId}");
+            _oAuthParameterHandler.AddAdditionalParameter("method", FlickrMethod.GetPhotoInfo);
+            _oAuthParameterHandler.AddAdditionalParameter("format", "json");
+
+            var endPoint = new FlickrRestEndPoint();
+            _oAuthParameterHandler.AddSignature(endPoint);
+
+            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("OAuth", _oAuthParameterHandler.GetAuthenticationHeader());
+            var response = await _httpClient.GetAsync($"{endPoint.Url}?{_oAuthParameterHandler.GetQueryString()}");
+            response.EnsureSuccessStatusCode();
+            var responseString = await response.Content.ReadAsStringAsync();
+            return ParseAndCheckResult<FlickrPhotoInfoResult>(responseString);
+        }
+
         private T ParseAndCheckResult<T>(string jsonResult) where T : FlickrResult
         {
             var result = jsonResult.Substring(14, jsonResult.Length - 15);

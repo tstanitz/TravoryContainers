@@ -75,7 +75,7 @@ namespace UnitTest.Flickr
         [Fact]
         public async Task GetPhotoSetPhotos_SuccessfullResponse()
         {
-            _httpMessageHandlerStub.Content = "jsonFlickrApi({\"photoset\":{\"id\":\"72157680817475516\",\"primary\":\"34546724775\",\"owner\":\"148184080@N02\",\"ownername\":\"tstanitz\",\"photo\":[" +
+            _httpMessageHandlerStub.Content = "jsonFlickrApi({\"photoset\":{\"id\":\"72157680817475516\",\"primary\":\"34546724775\",\"owner\":\"3452562@M87\",\"ownername\":\"tstanitz\",\"photo\":[" +
                                              "{\"id\":\"34546724775\",\"secret\":\"e0a5a8e527\",\"server\":\"4173\",\"farm\":5,\"title\":\"Test Title\",\"isprimary\":\"1\",\"ispublic\":0,\"isfriend\":0,\"isfamily\":0}," +
                                              "{\"id\":\"34171365780\",\"secret\":\"37d23dd9c3\",\"server\":\"4184\",\"farm\":5,\"title\":\"Test Title\",\"isprimary\":\"0\",\"ispublic\":0,\"isfriend\":0,\"isfamily\":0}],\"page\":1,\"per_page\":500,\"perpage\":500,\"pages\":1,\"total\":\"5\",\"title\":\"Test photoset\"},\"stat\":\"ok\"})";
 
@@ -86,6 +86,19 @@ namespace UnitTest.Flickr
             Assert.Equal("1", flickrPhotosResult.PhotoSet.Photo[0].IsPrimary);
             Assert.Equal("34171365780", flickrPhotosResult.PhotoSet.Photo[1].Id);
             Assert.Equal("0", flickrPhotosResult.PhotoSet.Photo[1].IsPrimary);
+        }
+
+        [Fact]
+        public async Task GetPhotoInfo_SuccessfullResponse()
+        {
+            _httpMessageHandlerStub.Content = "jsonFlickrApi({\"photo\":{" +
+                                             "\"id\":\"32182272603\",\"secret\":\"c4edf8f89f\",\"server\":\"4292\",\"farm\":5,\"dateuploaded\":\"1501069762\",\"isfavorite\":0,\"license\":\"0\",\"safety_level\":\"0\",\"rotation\":0,\"originalsecret\":\"6c81ff8105\",\"originalformat\":\"jpg\",\"owner\":{\"nsid\":\"3452562@M87\",\"username\":\"Travory Test\",\"realname\":\"\",\"location\":\"\",\"iconserver\":\"0\",\"iconfarm\":0,\"path_alias\":null},\"title\":{\"_content\":\"DSC_0001\"},\"description\":{\"_content\":\"\"},\"visibility\":{\"ispublic\":0,\"isfriend\":0,\"isfamily\":0}," +
+                                             "\"dates\":{" +
+                                             "\"posted\":\"1501069762\",\"taken\":\"2017-07-16 08:11:15\",\"takengranularity\":\"0\",\"takenunknown\":\"0\",\"lastupdate\":\"1501069764\"},\"permissions\":{\"permcomment\":3,\"permaddmeta\":2},\"views\":\"0\",\"editability\":{\"cancomment\":1,\"canaddmeta\":1},\"publiceditability\":{\"cancomment\":1,\"canaddmeta\":0},\"usage\":{\"candownload\":1,\"canblog\":1,\"canprint\":1,\"canshare\":1},\"comments\":{\"_content\":\"1\"},\"notes\":{\"note\":[]},\"people\":{\"haspeople\":0},\"tags\":{\"tag\":[]},\"urls\":{\"url\":[{\"type\":\"photopage\",\"_content\":\"https:\\/\\/www.flickr.com\\/photos\\/3452562@M87\\/5435673693\\/\"}]},\"media\":\"photo\"},\"stat\":\"ok\"})";
+
+            var flickrPhotoInfoResult = await _connector.GetPhotoInfo(_userData, 32182272603);
+
+            Assert.Equal("2017-07-16 08:11:15", flickrPhotoInfoResult.Photo.Dates.Taken);
         }
     }
 }
