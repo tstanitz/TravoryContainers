@@ -48,8 +48,8 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
         }
 
         [HttpPost]
-        [Route("photo/{id}")]
-        public async Task<IActionResult> GetPhoto([FromBody]UserData userData, long id)
+        [Route("photosources/{id}")]
+        public async Task<IActionResult> GetPhotoSources([FromBody]UserData userData, long id)
         {
             var flickrResult = await _flickrConnector.GetPhotoSizes(userData, id);
             var flickrPhotoSizeDataList = flickrResult?.Sizes?.Size;

@@ -29,6 +29,7 @@ namespace UnitTest.Flickr
             _dateCalculatorMock = new Mock<IDateCalculator>();
             _flickrController = new FlickrController(_flickrConnectorMock.Object, _dateCalculatorMock.Object);
         }
+
         [Fact]
         public async Task GetAlbums_ReturnsListOfAlbums()
         {
@@ -54,6 +55,7 @@ namespace UnitTest.Flickr
                 .Setup(d => d.GetDate(It.Is<string>(s => s == "2017. 05. 30."))).Returns(new DateTime(2017, 5, 30)).Verifiable();
             _dateCalculatorMock
                 .Setup(d => d.GetDate(It.Is<string>(s => s == "2017. 05. 31."))).Returns(new DateTime(2017, 5, 31)).Verifiable();
+
             var actionResult = await _flickrController.GetAlbums(_userData) as OkObjectResult;
 
             _dateCalculatorMock.Verify();
@@ -65,7 +67,7 @@ namespace UnitTest.Flickr
         }
 
         [Fact]
-        public async Task GetPhoto_ReturnsPhotoSources()
+        public async Task GetPhotoSources_ReturnsPhotoSources()
         {
             var square = "https://farm5.staticflickr.com/7654/5435435463_square.jpg";
             var large = "https://farm5.staticflickr.com/7654/5435435463_large.jpg";
@@ -74,7 +76,8 @@ namespace UnitTest.Flickr
             _flickrConnectorMock
                 .Setup(f => f.GetPhotoSizes(It.Is<UserData>(u => u == _userData), It.Is<long>(l => l == photoId)))
                 .ReturnsAsync(GetPhotoSizesResult((label: "Square", square),("Large", large), ("Original", original)));
-            var actionResult = await _flickrController.GetPhoto(_userData, photoId) as OkObjectResult;
+
+            var actionResult = await _flickrController.GetPhotoSources(_userData, photoId) as OkObjectResult;
 
             _dateCalculatorMock.Verify();
             Assert.NotNull(actionResult);
