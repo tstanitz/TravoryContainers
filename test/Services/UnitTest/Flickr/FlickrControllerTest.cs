@@ -113,7 +113,7 @@ namespace UnitTest.Flickr
             var date = DateTime.Parse("2017-07-16 08:11:15");
             _flickrConnectorMock.Setup(f => f.GetPhotoInfo(It.Is<UserData>(u => u == _userData), It.Is<long>(i => i == photoId))).ReturnsAsync(GetPhotoInfoResult(photoId, dateTaken)).Verifiable();
             _dateCalculatorMock
-                .Setup(d => d.GetDate(It.Is<string>(s => s == dateTaken))).Returns(date).Verifiable();
+                .Setup(d => d.GetDateAndTime(It.Is<string>(s => s == dateTaken))).Returns(date).Verifiable();
 
             var actionResult = await _flickrController.GetPhotoInfo(_userData, photoId) as OkObjectResult;
 

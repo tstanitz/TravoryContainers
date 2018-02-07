@@ -88,7 +88,7 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
             var photoInfo = new PhotoInfo
             {
                 Id = id,
-                Taken = RemoveMilliseconds(_dateCalculator.GetDate(flickrResult?.Photo?.Dates?.Taken))
+                Taken = _dateCalculator.GetDateAndTime(flickrResult?.Photo?.Dates?.Taken)
             };            
             return Ok(photoInfo);
         }
@@ -106,15 +106,6 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
                 return (from: _dateCalculator.GetDate(fromString), to: _dateCalculator.GetDate(toString));
             }
             return (from: null, to: null);
-        }
-
-        private DateTime? RemoveMilliseconds(DateTime? dateTime)
-        {
-            if (dateTime == null) return null;
-            var date = dateTime.Value;
-            return new DateTime(date.Ticks - (date.Ticks % TimeSpan.TicksPerSecond), date.Kind);
-
-        }
-
+        }        
     }
 }

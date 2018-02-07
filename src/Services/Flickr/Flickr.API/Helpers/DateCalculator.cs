@@ -8,10 +8,25 @@ namespace TravoryContainers.Services.Flickr.API.Helpers
         {
             if (!string.IsNullOrEmpty(dateString) && DateTime.TryParse(dateString, out var date))
             {
-                return date;
+                return date.Date;
             }
 
             return null;
+        }
+
+        public DateTime? GetDateAndTime(string dateString)
+        {
+            if (!string.IsNullOrEmpty(dateString) && DateTime.TryParse(dateString, out var date))
+            {
+                return date;
+            }
+
+            return null;            
+        }
+
+        private DateTime RemoveMilliseconds(DateTime dateTime)
+        {
+            return new DateTime(dateTime.Ticks - (dateTime.Ticks % TimeSpan.TicksPerSecond), dateTime.Kind);
         }
     }
 }
