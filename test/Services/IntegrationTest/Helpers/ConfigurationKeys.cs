@@ -1,4 +1,4 @@
-﻿namespace IntegrationTest.Flickr
+﻿namespace IntegrationTest.Helpers
 {
     public class ConfigurationKeys
     {

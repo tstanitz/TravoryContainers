@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using TravoryContainers.Services.Flickr.API.Model;
 
-namespace IntegrationTest.Flickr
+namespace IntegrationTest.Helpers
 {
     public class UserDataProvider : EnvironmentVariableHandlerBase
     {

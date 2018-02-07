@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IntegrationTest.Flickr
+namespace IntegrationTest.Helpers
 {
     public abstract class EnvironmentVariableHandlerBase
     {
