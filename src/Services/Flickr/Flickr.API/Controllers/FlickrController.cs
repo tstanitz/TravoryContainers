@@ -48,21 +48,6 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
         }
 
         [HttpPost]
-        [Route("photosources/{id}")]
-        public async Task<IActionResult> GetPhotoSources([FromBody]UserData userData, long id)
-        {
-            var flickrResult = await _flickrConnector.GetPhotoSizes(userData, id);
-            var flickrPhotoSizeDataList = flickrResult?.Sizes?.Size;
-            return Ok(new Photo
-            {
-                Id = id,
-                Square = flickrPhotoSizeDataList?.FirstOrDefault(s => s.Label == "Square")?.Source,
-                Large = flickrPhotoSizeDataList?.FirstOrDefault(s => s.Label == "Large")?.Source,
-                Original = flickrPhotoSizeDataList?.FirstOrDefault(s => s.Label == "Original")?.Source
-            });
-        }
-
-        [HttpPost]
         [Route("photoset/{id}/photos")]
         public async Task<IActionResult> GetPhotoSetPhotos([FromBody]UserData userData, long id)
         {
@@ -81,18 +66,23 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
         }
 
         [HttpPost]
-        [Route("photo/{id}/info")]
-        public async Task<IActionResult> GetPhotoInfo([FromBody]UserData userData, long id)
+        [Route("photo/{id}")]
+        public async Task<IActionResult> GetPhoto([FromBody]UserData userData, long id)
         {
-            var flickrResult = await _flickrConnector.GetPhotoInfo(userData, id);
-            var photoInfo = new PhotoInfo
+            var photoSizes = await _flickrConnector.GetPhotoSizes(userData, id);
+            var photoInfo = await _flickrConnector.GetPhotoInfo(userData, id);
+
+            var flickrPhotoSizeDataList = photoSizes?.Sizes?.Size;
+            return Ok(new Photo
             {
                 Id = id,
-                Taken = _dateCalculator.GetDateAndTime(flickrResult?.Photo?.Dates?.Taken)
-            };            
-            return Ok(photoInfo);
-        }
-
+                Square = flickrPhotoSizeDataList?.FirstOrDefault(s => s.Label == "Square")?.Source,
+                Large = flickrPhotoSizeDataList?.FirstOrDefault(s => s.Label == "Large")?.Source,
+                Original = flickrPhotoSizeDataList?.FirstOrDefault(s => s.Label == "Original")?.Source,
+                Taken = _dateCalculator.GetDateAndTime(photoInfo?.Photo?.Dates?.Taken)
+            });
+        }            
+        
         private (DateTime? from, DateTime? to) GetFromAndToDates(FlickrPhotoSetData photoSet)
         {
             var intervalComment = photoSet?.Description?._Content;

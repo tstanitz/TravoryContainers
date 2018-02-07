@@ -1,4 +1,6 @@
-﻿namespace TravoryContainers.Services.Flickr.API.Model
+﻿using System;
+
+namespace TravoryContainers.Services.Flickr.API.Model
 {
     public class Photo
     {
@@ -6,5 +8,6 @@
         public string Square { get; set; }
         public string Large { get; set; }
         public string Original { get; set; }
+        public DateTime? Taken { get; set; }
     }
 }

@@ -26,19 +26,7 @@ namespace IntegrationTest.Flickr
                 response.EnsureSuccessStatusCode();
             }
         }
-
-        [Fact]
-        public async Task Post_photosources_and_response_ok_status_code()
-        {
-            using (var server = CreateServer())
-            {
-                var content = new StringContent(_userDataProvider.BuildUserData(), Encoding.UTF8, "application/json");
-                var response = await server.CreateClient().PostAsync(Post.PhotoSources(_idProvider.GetPhotoId), content);
-
-                response.EnsureSuccessStatusCode();
-            }
-        }
-
+        
         [Fact]
         public async Task Post_photosetphotos_and_response_ok_status_code()
         {
@@ -52,12 +40,12 @@ namespace IntegrationTest.Flickr
         }
 
         [Fact]
-        public async Task Post_photoinfo_and_response_ok_status_code()
+        public async Task Post_photo_and_response_ok_status_code()
         {
             using (var server = CreateServer())
             {
                 var content = new StringContent(_userDataProvider.BuildUserData(), Encoding.UTF8, "application/json");
-                var response = await server.CreateClient().PostAsync(Post.PhotoInfo(_idProvider.GetPhotoId), content);
+                var response = await server.CreateClient().PostAsync(Post.Photo(_idProvider.GetPhotoId), content);
 
                 response.EnsureSuccessStatusCode();
             }

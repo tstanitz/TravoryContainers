@@ -68,28 +68,6 @@ namespace UnitTest.Flickr
         }
 
         [Fact]
-        public async Task GetPhotoSources_ReturnsPhotoSources()
-        {
-            var square = "https://farm5.staticflickr.com/7654/5435435463_square.jpg";
-            var large = "https://farm5.staticflickr.com/7654/5435435463_large.jpg";
-            var original = "https://farm5.staticflickr.com/7654/5435435463_orig.jpg";
-            long photoId = 32182272603;
-            _flickrConnectorMock
-                .Setup(f => f.GetPhotoSizes(It.Is<UserData>(u => u == _userData), It.Is<long>(l => l == photoId)))
-                .ReturnsAsync(GetPhotoSizesResult((label: "Square", square),("Large", large), ("Original", original)));
-
-            var actionResult = await _flickrController.GetPhotoSources(_userData, photoId) as OkObjectResult;
-
-            _dateCalculatorMock.Verify();
-            Assert.NotNull(actionResult);
-            Assert.Equal((int)System.Net.HttpStatusCode.OK, actionResult.StatusCode);
-            Assert.Equal(photoId, ((Photo)actionResult.Value).Id);
-            Assert.Equal(square, ((Photo)actionResult.Value).Square);
-            Assert.Equal(large, ((Photo)actionResult.Value).Large);
-            Assert.Equal(original, ((Photo)actionResult.Value).Original);
-        }
-
-        [Fact]
         public async Task GetPhotoSetPhotos_ReturnsPhotoIds()
         {
             long photoSetId = 27157680817475516;
@@ -106,24 +84,33 @@ namespace UnitTest.Flickr
         }
 
         [Fact]
-        public async Task GetPhotoInfo_ReturnsPhotoDateTaken()
+        public async Task GetPhoto_ReturnsPhotoSources()
         {
+            var square = "https://farm5.staticflickr.com/7654/5435435463_square.jpg";
+            var large = "https://farm5.staticflickr.com/7654/5435435463_large.jpg";
+            var original = "https://farm5.staticflickr.com/7654/5435435463_orig.jpg";
             long photoId = 32182272603;
             string dateTaken = "2017-07-16 08:11:15";
             var date = DateTime.Parse("2017-07-16 08:11:15");
+            _flickrConnectorMock
+                .Setup(f => f.GetPhotoSizes(It.Is<UserData>(u => u == _userData), It.Is<long>(l => l == photoId)))
+                .ReturnsAsync(GetPhotoSizesResult((label: "Square", square), ("Large", large), ("Original", original)));
+
             _flickrConnectorMock.Setup(f => f.GetPhotoInfo(It.Is<UserData>(u => u == _userData), It.Is<long>(i => i == photoId))).ReturnsAsync(GetPhotoInfoResult(photoId, dateTaken)).Verifiable();
             _dateCalculatorMock
                 .Setup(d => d.GetDateAndTime(It.Is<string>(s => s == dateTaken))).Returns(date).Verifiable();
 
-            var actionResult = await _flickrController.GetPhotoInfo(_userData, photoId) as OkObjectResult;
+            var actionResult = await _flickrController.GetPhoto(_userData, photoId) as OkObjectResult;
 
-            _flickrConnectorMock.Verify();
             _dateCalculatorMock.Verify();
             Assert.NotNull(actionResult);
             Assert.Equal((int)System.Net.HttpStatusCode.OK, actionResult.StatusCode);
-            Assert.Equal(photoId, ((PhotoInfo)actionResult.Value).Id);
-            Assert.Equal(date, ((PhotoInfo)actionResult.Value).Taken);
-        }        
+            Assert.Equal(photoId, ((Photo)actionResult.Value).Id);
+            Assert.Equal(square, ((Photo)actionResult.Value).Square);
+            Assert.Equal(large, ((Photo)actionResult.Value).Large);
+            Assert.Equal(original, ((Photo)actionResult.Value).Original);
+            Assert.Equal(date, ((Photo)actionResult.Value).Taken);
+        }
 
         private FlickrPhotoSetsResult GetPhotoSetsResult(params (long id, long primary, string title, string description)[] photoSetDataValues)
         {
@@ -148,7 +135,7 @@ namespace UnitTest.Flickr
             };
         }
 
-        private FlickrPhotoSizesResult GetPhotoSizesResult(params(string label, string source)[] sizes)
+        private FlickrPhotoSizesResult GetPhotoSizesResult(params (string label, string source)[] sizes)
         {
             return new FlickrPhotoSizesResult
             {
