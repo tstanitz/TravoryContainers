@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import { of } from 'rxjs/observable/of';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 import {Album} from './album';
 
@@ -11,10 +11,10 @@ export class AlbumsService {
     { id: 1 },
     { id: 2 }
   ];
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
-  getAlbums(): Observable<Album[]> {   
-    return of(this.albums);
+  getAlbums(): Observable<Album[]> {
+    return this.http.get<Album[]>("http://localhost:5001/api/v1/flickr/albums");
   }
 }
 
