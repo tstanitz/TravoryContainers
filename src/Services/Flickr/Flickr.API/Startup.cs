@@ -31,6 +31,8 @@ namespace TravoryContainers.Services.Flickr.API
 
             services.AddMvc();
 
+            services.AddCors();
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Flickr.API", Version = "v1" });
@@ -50,6 +52,10 @@ namespace TravoryContainers.Services.Flickr.API
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Flickr.API V1");
             });
+
+            app.UseCors(builder =>
+                builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod()
+            );
 
             app.UseMvc();
         }
