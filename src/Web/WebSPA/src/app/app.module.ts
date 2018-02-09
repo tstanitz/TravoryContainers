@@ -6,6 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { AlbumsComponent } from './albums/albums.component';
 import { AlbumsService } from './albums/albums.service';
+import { UserdataService } from './albums/userdata.service';
 
 
 @NgModule({
@@ -17,7 +18,7 @@ import { AlbumsService } from './albums/albums.service';
     BrowserModule,
     HttpClientModule
   ],
-  providers: [AlbumsService],
+  providers: [AlbumsService, UserdataService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
