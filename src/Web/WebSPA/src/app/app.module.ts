@@ -5,9 +5,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule} from './app-routing.module'
 
 import { AppComponent } from './app.component';
-import { AlbumsComponent } from './albums/albums.component';
-import { AlbumsService } from './albums/albums.service';
-import { UserdataService } from './albums/userdata.service';
+import { AlbumsComponent } from './components/albums.component';
+import { AlbumsService } from './components/albums.service';
+import { UserdataService } from './components/userdata.service';
 
 
 @NgModule({
