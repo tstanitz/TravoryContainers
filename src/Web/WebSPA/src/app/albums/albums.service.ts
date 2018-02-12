@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 
 import { Album } from './album';
+import { Photo } from './photo';
 import { UserdataService } from './userdata.service';
 
 @Injectable()
