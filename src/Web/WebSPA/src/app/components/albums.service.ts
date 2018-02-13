@@ -17,11 +17,11 @@ export class AlbumsService {
   }
 
   getPhotoIds(id: number): Observable<number> {
-    return this.http.post<number>(`http://localhost:5000/api/v1/flickr/photoset/${id}/photos`, this.userdataservice.getData());
+    return this.http.post<number>(`http://localhost:5001/api/v1/flickr/photoset/${id}/photos`, this.userdataservice.getData());
   }
 
   getPhoto(id: number): Observable<Photo> {
-    return this.http.post<Photo>(`http://localhost:5000/api/v1/flickr/photo/${id}`, this.userdataservice.getData());
+    return this.http.post<Photo>(`http://localhost:5001/api/v1/flickr/photo/${id}`, this.userdataservice.getData());
   }
 }
 
