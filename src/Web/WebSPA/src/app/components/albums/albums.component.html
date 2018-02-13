@@ -4,7 +4,9 @@
 <div>
   <ul>
     <li *ngFor="let album of albums">
-      <img [src]="album.square" />{{album.title}}      
+      <a routerLink="/album/{{album.id}}">
+        <img [src]="album.square" />{{album.title}}
+      </a>
     </li>
   </ul>
 </div>

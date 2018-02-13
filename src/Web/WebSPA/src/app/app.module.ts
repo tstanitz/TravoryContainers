@@ -6,7 +6,7 @@ import { AppRoutingModule} from './app-routing.module'
 
 import { AppComponent } from './app.component';
 import { AlbumsComponent } from './components/albums/albums.component';
-import { AlbumsService } from './components/albums/albums.service';
+import { AlbumsService } from './components/albums.service';
 import { UserdataService } from './components/userdata.service';
 import { AlbumDetailComponent } from './components/album-detail/album-detail.component';
 
