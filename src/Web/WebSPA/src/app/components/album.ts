@@ -1,5 +1,5 @@
 export class Album {
-  id: number;
+  id: string;
   primary: number;
   title: string;
   square: string;

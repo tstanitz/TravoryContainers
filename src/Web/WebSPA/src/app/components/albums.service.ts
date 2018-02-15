@@ -16,8 +16,8 @@ export class AlbumsService {
     return this.http.post<Album[]>(`${this.apiUrl}/api/v1/flickr/albums`, this.userdataservice.getData());
   }
 
-  getPhotoIds(id: number): Observable<number> {
-    return this.http.post<number>(`http://localhost:5001/api/v1/flickr/photoset/${id}/photos`, this.userdataservice.getData());
+  getPhotoIds(id: string): Observable<number> {
+    return this.http.post<number>(`${this.apiUrl}/api/v1/flickr/photoset/${id}/photos`, this.userdataservice.getData());
   }
 
   getPhoto(id: number): Observable<Photo> {

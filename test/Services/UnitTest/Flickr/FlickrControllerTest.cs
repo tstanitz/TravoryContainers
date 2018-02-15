@@ -16,7 +16,7 @@ namespace UnitTest.Flickr
 {
     public class FlickrControllerTest
     {
-        private (long id, long primary, string title, string description) _photoSetDataValue;
+        private (string id, long primary, string title, string description) _photoSetDataValue;
         private readonly UserData _userData;
         private readonly Mock<IFlickrConnector> _flickrConnectorMock;
         private readonly FlickrController _flickrController;
@@ -25,7 +25,7 @@ namespace UnitTest.Flickr
         public FlickrControllerTest()
         {
             _userData = new UserData();
-            _photoSetDataValue = (id: 27157680817475516, primary: 32182272603, title: "Title", description: "");
+            _photoSetDataValue = (id: "27157680817475516", primary: 32182272603, title: "Title", description: "");
             _flickrConnectorMock = new Mock<IFlickrConnector>();
             _dateCalculatorMock = new Mock<IDateCalculator>();
             _flickrController = new FlickrController(_flickrConnectorMock.Object, _dateCalculatorMock.Object);
@@ -112,7 +112,7 @@ namespace UnitTest.Flickr
             Assert.Equal(date, ((Photo)actionResult.Value).Taken);
         }
 
-        private FlickrPhotoSetsResult GetPhotoSetsResult(params (long id, long primary, string title, string description)[] photoSetDataValues)
+        private FlickrPhotoSetsResult GetPhotoSetsResult(params (string id, long primary, string title, string description)[] photoSetDataValues)
         {
             return new FlickrPhotoSetsResult()
             {
@@ -120,7 +120,7 @@ namespace UnitTest.Flickr
                 {
                     PhotoSet = photoSetDataValues.Select(p => new FlickrPhotoSetData
                     {
-                        Id = p.id.ToString(),
+                        Id = p.id,
                         Primary = p.primary.ToString(),
                         Title = new FlickrContentData
                         {

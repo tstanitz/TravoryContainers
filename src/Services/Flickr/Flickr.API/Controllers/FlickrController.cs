@@ -36,7 +36,7 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
                     var dates = GetFromAndToDates(photoSet);
                     albums.Add(new Album
                     {
-                        Id = long.Parse(photoSet.Id),
+                        Id = photoSet.Id,
                         Primary = long.Parse(photoSet.Primary),
                         Title = photoSet.Title._Content,
                         FromDate = dates.from,
