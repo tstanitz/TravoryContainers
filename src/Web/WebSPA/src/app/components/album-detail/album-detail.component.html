@@ -1,3 +1,7 @@
-<p>
-  album-detail works! Id: {{id}}
-</p>
+<div>
+  <ul>
+    <li *ngFor="let photo of photos">
+      <img [src]="photo.square"/>
+    </li>
+  </ul>
+</div>

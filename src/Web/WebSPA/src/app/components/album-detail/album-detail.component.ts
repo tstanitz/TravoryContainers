@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 
-import { AlbumsService } from '../albums.service' 
+import { AlbumsService } from '../albums.service';
+import {Photo} from "../photo";
 
 @Component({
   selector: 'app-album-detail',
@@ -10,7 +11,7 @@ import { AlbumsService } from '../albums.service'
   styleUrls: ['./album-detail.component.css']
 })
 export class AlbumDetailComponent implements OnInit {
-  id: string;
+  photos: Photo[] = [];
   constructor(
     private route: ActivatedRoute,
     private albumService: AlbumsService,
@@ -18,7 +19,12 @@ export class AlbumDetailComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id');
+    let photoSetId = this.route.snapshot.paramMap.get('id');
+    this.albumService.getPhotoIds(photoSetId).subscribe(i => {
+      for (var id of i) {
+        this.albumService.getPhoto(id.id).subscribe(p => this.photos.push(p));
+      }      
+    });
   }
 
 }
