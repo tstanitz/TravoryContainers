@@ -9,11 +9,11 @@ import { UserdataService } from './userdata.service';
 
 @Injectable()
 export class AlbumsService {
-
+  apiUrl = "http://localhost:5001";
   constructor(private http: HttpClient, private userdataservice: UserdataService) { }
 
   getAlbums(): Observable<Album[]> {
-    return this.http.post<Album[]>("http://localhost:5001/api/v1/flickr/albums", this.userdataservice.getData());
+    return this.http.post<Album[]>(`${this.apiUrl}/api/v1/flickr/albums`, this.userdataservice.getData());
   }
 
   getPhotoIds(id: number): Observable<number> {
@@ -21,7 +21,7 @@ export class AlbumsService {
   }
 
   getPhoto(id: number): Observable<Photo> {
-    return this.http.post<Photo>(`http://localhost:5001/api/v1/flickr/photo/${id}`, this.userdataservice.getData());
+    return this.http.post<Photo>(`${this.apiUrl}/api/v1/flickr/photo/${id}`, this.userdataservice.getData());
   }
 }
 
