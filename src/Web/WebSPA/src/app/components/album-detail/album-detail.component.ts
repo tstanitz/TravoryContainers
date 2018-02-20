@@ -20,10 +20,10 @@ export class AlbumDetailComponent implements OnInit {
 
   ngOnInit() {
     let photoSetId = this.route.snapshot.paramMap.get('id');
-    this.albumService.getPhotoIds(photoSetId).subscribe(i => {
-      for (var id of i) {
-        this.albumService.getPhoto(id.id).subscribe(p => this.photos.push(p));
-      }      
+    this.albumService.getPhotoIds(photoSetId).subscribe(ids => {
+      for (let i of ids) {
+        this.albumService.getPhoto(i.id).subscribe(p => this.photos.push(p));      
+      }
     });
   }
 
