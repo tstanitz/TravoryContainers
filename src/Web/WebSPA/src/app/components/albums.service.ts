@@ -9,7 +9,7 @@ import { UserdataService } from './userdata.service';
 
 @Injectable()
 export class AlbumsService {
-  apiUrl = "http://localhost:5001";
+  apiUrl = "http://localhost:30303";
   constructor(private http: HttpClient, private userdataservice: UserdataService) { }
 
   getAlbums(): Observable<Album[]> {

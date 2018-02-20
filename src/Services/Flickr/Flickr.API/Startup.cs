@@ -54,7 +54,7 @@ namespace TravoryContainers.Services.Flickr.API
             });
 
             app.UseCors(builder =>
-                builder.WithOrigins("http://localhost:4200").AllowAnyHeader().AllowAnyMethod()
+                builder.WithOrigins("http://localhost:30303", "http://localhost:4200").AllowAnyHeader().AllowAnyMethod()
             );
 
             app.UseMvc();
