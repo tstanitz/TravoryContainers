@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { Album } from './album';
 import { Photo } from './photo';
 import { UserdataService } from './userdata.service';
+import {PhotoReference} from './photoreference';
 
 @Injectable()
 export class AlbumsService {
@@ -16,8 +17,8 @@ export class AlbumsService {
     return this.http.post<Album[]>(`${this.apiUrl}/api/v1/flickr/albums`, this.userdataservice.getData());
   }
 
-  getPhotoIds(id: string): Observable<number[]> {
-    return this.http.post<number[]>(`${this.apiUrl}/api/v1/flickr/photoset/${id}/photos`, this.userdataservice.getData());
+  getPhotoIds(id: string): Observable<PhotoReference[]> {
+    return this.http.post<PhotoReference[]>(`${this.apiUrl}/api/v1/flickr/photoset/${id}/photos`, this.userdataservice.getData());
   }
 
   getPhoto(id: number): Observable<Photo> {
