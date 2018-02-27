@@ -32,7 +32,7 @@ namespace IntegrationTest.Flickr
         [Fact]
         public async Task Post_photosetphotos_and_response_ok_status_code()
         {
-            var request = GetRequest(Post.PhotoSetPhotos(_idProvider.GetPhotoSetId));
+            var request = GetRequest(Post.PhotoSetPhotoIds(_idProvider.GetPhotoSetId));
 
             var response = await request.GetAsync();
 

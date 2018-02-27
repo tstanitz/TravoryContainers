@@ -18,7 +18,7 @@ namespace IntegrationTest.Flickr
 
         public static class Post
         {
-            public static string PhotoSetPhotos(long id) => $"{ApiUrlBase}/photoset/{id}/photos";
+            public static string PhotoSetPhotoIds(long id) => $"{ApiUrlBase}/photoset/{id}/photoids";
             public static string Photo(long id) => $"{ApiUrlBase}/photo/{id}";
         }
 

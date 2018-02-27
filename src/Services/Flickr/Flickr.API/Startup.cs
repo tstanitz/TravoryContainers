@@ -7,6 +7,7 @@ using TravoryContainers.Services.Flickr.API.Connector;
 using TravoryContainers.Services.Flickr.API.Connector.OAuthParameterHandling;
 using TravoryContainers.Services.Flickr.API.Controllers;
 using TravoryContainers.Services.Flickr.API.Helpers;
+using TravoryContainers.Services.Flickr.API.Services;
 
 namespace TravoryContainers.Services.Flickr.API
 {
@@ -26,6 +27,7 @@ namespace TravoryContainers.Services.Flickr.API
             services.AddScoped<IOAuthDataProvider, OAuthDataProvider>();
             services.AddScoped<IFlickrSignatureCalculator, FlickrSignatureCalculator>();
             services.AddScoped<IOAuthParameterHandler, OAuthParameterHandler>();
+            services.AddScoped<IFlickrService, FlickrService>();
             services.AddScoped<IFlickrConnector, FlickrConnector>();
 
 

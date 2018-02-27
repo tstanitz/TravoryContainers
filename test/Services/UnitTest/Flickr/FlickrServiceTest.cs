@@ -10,25 +10,26 @@ using TravoryContainers.Services.Flickr.API.Connector.FlickrResults;
 using TravoryContainers.Services.Flickr.API.Controllers;
 using TravoryContainers.Services.Flickr.API.Helpers;
 using TravoryContainers.Services.Flickr.API.Model;
+using TravoryContainers.Services.Flickr.API.Services;
 using Xunit;
 
 namespace UnitTest.Flickr
 {
-    public class FlickrControllerTest
+    public class FlickrServiceTest
     {
         private (long id, long primary, string title, string description) _photoSetDataValue;
         private readonly UserData _userData;
         private readonly Mock<IFlickrConnector> _flickrConnectorMock;
-        private readonly FlickrController _flickrController;
+        private readonly FlickrService _flickrService;
         private readonly Mock<IDateCalculator> _dateCalculatorMock;
 
-        public FlickrControllerTest()
+        public FlickrServiceTest()
         {
             _userData = new UserData();
             _photoSetDataValue = (id: 27157680817475516, primary: 32182272603, title: "Title", description: "");
             _flickrConnectorMock = new Mock<IFlickrConnector>();
             _dateCalculatorMock = new Mock<IDateCalculator>();
-            _flickrController = new FlickrController(_flickrConnectorMock.Object, _dateCalculatorMock.Object);
+            _flickrService = new FlickrService(_flickrConnectorMock.Object, _dateCalculatorMock.Object);
         }
 
         [Fact]
@@ -36,15 +37,14 @@ namespace UnitTest.Flickr
         {
             _flickrConnectorMock.Setup(f => f.GetPhotoSets(It.Is<UserData>(u => u == _userData))).ReturnsAsync(GetPhotoSetsResult(_photoSetDataValue)).Verifiable();
 
-            var actionResult = await _flickrController.GetAlbums(_userData) as OkObjectResult;
+            var photoSets = await _flickrService.GetPhotoSets(_userData);
 
             _flickrConnectorMock.Verify();
-            Assert.NotNull(actionResult);
-            Assert.Equal((int)System.Net.HttpStatusCode.OK, actionResult.StatusCode);
-            Assert.Single((List<Album>)actionResult.Value);
-            Assert.Equal(_photoSetDataValue.id, ((List<Album>)actionResult.Value)[0].Id);
-            Assert.Equal(_photoSetDataValue.primary, ((List<Album>)actionResult.Value)[0].Primary);
-            Assert.Equal(_photoSetDataValue.title, ((List<Album>)actionResult.Value)[0].Title);
+            Assert.NotNull(photoSets);
+            Assert.Single(photoSets);
+            Assert.Equal(_photoSetDataValue.id, photoSets[0].Id);
+            Assert.Equal(_photoSetDataValue.primary, photoSets[0].Primary);
+            Assert.Equal(_photoSetDataValue.title, photoSets[0].Title);
         }
 
         [Fact]
@@ -57,14 +57,13 @@ namespace UnitTest.Flickr
             _dateCalculatorMock
                 .Setup(d => d.GetDate(It.Is<string>(s => s == "2017. 05. 31."))).Returns(new DateTime(2017, 5, 31)).Verifiable();
 
-            var actionResult = await _flickrController.GetAlbums(_userData) as OkObjectResult;
+            var photoSets = await _flickrService.GetPhotoSets(_userData);
 
             _dateCalculatorMock.Verify();
-            Assert.NotNull(actionResult);
-            Assert.Equal((int)System.Net.HttpStatusCode.OK, actionResult.StatusCode);
-            Assert.Single((List<Album>)actionResult.Value);
-            Assert.Equal(new DateTime(2017, 5, 30), ((List<Album>)actionResult.Value)[0].FromDate);
-            Assert.Equal(new DateTime(2017, 5, 31), ((List<Album>)actionResult.Value)[0].ToDate);
+            Assert.NotNull(photoSets);
+            Assert.Single(photoSets);
+            Assert.Equal(new DateTime(2017, 5, 30), photoSets[0].FromDate);
+            Assert.Equal(new DateTime(2017, 5, 31), photoSets[0].ToDate);
         }
 
         [Fact]
@@ -74,13 +73,12 @@ namespace UnitTest.Flickr
             long photoId = 32182272603;
             _flickrConnectorMock.Setup(f => f.GetPhotosSetPhotos(It.Is<UserData>(u => u == _userData), It.Is<long>(i => i == photoSetId))).ReturnsAsync(GetPhotosResult(photoId)).Verifiable();
 
-            var actionResult = await _flickrController.GetPhotoSetPhotos(_userData, photoSetId) as OkObjectResult;
+            var photoIds = await _flickrService.GetPhotoSetPhotoIds(_userData, photoSetId);
 
             _flickrConnectorMock.Verify();
-            Assert.NotNull(actionResult);
-            Assert.Equal((int)System.Net.HttpStatusCode.OK, actionResult.StatusCode);
-            Assert.Single((List<PhotoReference>)actionResult.Value);
-            Assert.Equal(photoId, ((List<PhotoReference>)actionResult.Value)[0].Id);
+            Assert.NotNull(photoIds);
+            Assert.Single(photoIds);
+            Assert.Equal(photoId, photoIds[0].Id);
         }
 
         [Fact]
@@ -100,16 +98,15 @@ namespace UnitTest.Flickr
             _dateCalculatorMock
                 .Setup(d => d.GetDateAndTime(It.Is<string>(s => s == dateTaken))).Returns(date).Verifiable();
 
-            var actionResult = await _flickrController.GetPhoto(_userData, photoId) as OkObjectResult;
+            var photo = await _flickrService.GetPhoto(_userData, photoId);
 
             _dateCalculatorMock.Verify();
-            Assert.NotNull(actionResult);
-            Assert.Equal((int)System.Net.HttpStatusCode.OK, actionResult.StatusCode);
-            Assert.Equal(photoId, ((Photo)actionResult.Value).Id);
-            Assert.Equal(square, ((Photo)actionResult.Value).Square);
-            Assert.Equal(large, ((Photo)actionResult.Value).Large);
-            Assert.Equal(original, ((Photo)actionResult.Value).Original);
-            Assert.Equal(date, ((Photo)actionResult.Value).Taken);
+            Assert.NotNull(photo);
+            Assert.Equal(photoId, photo.Id);
+            Assert.Equal(square, photo.Square);
+            Assert.Equal(large, photo.Large);
+            Assert.Equal(original, photo.Original);
+            Assert.Equal(date, photo  .Taken);
         }
 
         private FlickrPhotoSetsResult GetPhotoSetsResult(params (long id, long primary, string title, string description)[] photoSetDataValues)
