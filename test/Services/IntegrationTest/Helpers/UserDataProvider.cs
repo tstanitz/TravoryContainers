@@ -1,19 +1,18 @@
-﻿using Newtonsoft.Json;
-using TravoryContainers.Services.Flickr.API.Model;
+﻿using TravoryContainers.Services.Flickr.API.Model;
 
 namespace IntegrationTest.Helpers
 {
     public class UserDataProvider : EnvironmentVariableHandlerBase
-    {
-        public string BuildUserData()
+    {      
+        public UserData GetUserData()
         {
-            return JsonConvert.SerializeObject(new UserData
+            return new UserData
             {
                 ConsumerKey = GetEnvironmentVariable(ConfigurationKeys.ConsumerKey),
                 ConsumerSecret = GetEnvironmentVariable(ConfigurationKeys.ConsumerSecret),
                 Token = GetEnvironmentVariable(ConfigurationKeys.Token),
                 TokenSecret = GetEnvironmentVariable(ConfigurationKeys.TokenSecret)
-            });
-        }        
+            };
+        }
     }
 }

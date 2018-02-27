@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TravoryContainers.Services.Flickr.API.Connector;
 using TravoryContainers.Services.Flickr.API.Connector.FlickrResults;
@@ -22,11 +23,11 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
             _dateCalculator = dateCalculator;
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("albums")]
-        public async Task<IActionResult> GetAlbums([FromBody]UserData userData)
+        public async Task<IActionResult> GetAlbums()
         {
-            var flickrResult = await _flickrConnector.GetPhotoSets(userData);
+            var flickrResult = await _flickrConnector.GetPhotoSets(GetUserData(HttpContext));
 
             var albums = new List<Album>();
             if (flickrResult?.PhotoSets?.PhotoSet != null)
@@ -47,11 +48,11 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
             return Ok(albums);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("photoset/{id}/photos")]
-        public async Task<IActionResult> GetPhotoSetPhotos([FromBody]UserData userData, long id)
+        public async Task<IActionResult> GetPhotoSetPhotos(long id)
         {
-            var flickrResult = await _flickrConnector.GetPhotosSetPhotos(userData, id);
+            var flickrResult = await _flickrConnector.GetPhotosSetPhotos(GetUserData(HttpContext), id);
             var photoIds = new List<PhotoReference>();
 
             foreach (var photoReference in flickrResult.PhotoSet.Photo)
@@ -65,10 +66,11 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
             return Ok(photoIds);
         }
 
-        [HttpPost]
+        [HttpGet]
         [Route("photo/{id}")]
-        public async Task<IActionResult> GetPhoto([FromBody]UserData userData, long id)
+        public async Task<IActionResult> GetPhoto(long id)
         {
+            var userData = GetUserData(HttpContext);
             var photoSizes = await _flickrConnector.GetPhotoSizes(userData, id);
             var photoInfo = await _flickrConnector.GetPhotoInfo(userData, id);
 
@@ -81,8 +83,15 @@ namespace TravoryContainers.Services.Flickr.API.Controllers
                 Original = flickrPhotoSizeDataList?.FirstOrDefault(s => s.Label == "Original")?.Source,
                 Taken = _dateCalculator.GetDateAndTime(photoInfo?.Photo?.Dates?.Taken)
             });
-        }            
-        
+        }
+
+        private UserData GetUserData(HttpContext context)
+        {
+            return new UserData(
+                context.GetConsumer(),
+                context.GetToken());
+        }
+
         private (DateTime? from, DateTime? to) GetFromAndToDates(FlickrPhotoSetData photoSet)
         {
             var intervalComment = photoSet?.Description?._Content;
